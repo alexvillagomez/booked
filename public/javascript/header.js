@@ -45,6 +45,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Social tab created:', socialLink); // Log creation of social tab
 
 
+
+    const chatLink = document.createElement('a');
+    chatLink.href = '../html/chat.html';
+    chatLink.id = 'chatTab';
+    chatLink.classList.add('ml-4', 'font-bold','text-green-900', 'text-lg', 'px-4', 'py-2', 'rounded', 'mr-8');
+    chatLink.textContent = 'Booked Chatbot';
+
+
     const notificationBadge = document.createElement('span');
     notificationBadge.id = 'notificationBadge'; // Give it the ID for styling
     notificationBadge.textContent = ''; // Set default content to an empty string
@@ -56,6 +64,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     logoAndHomeContainer.appendChild(homeLink);
     logoAndHomeContainer.appendChild(listsLink);
     logoAndHomeContainer.appendChild(socialLink);
+    logoAndHomeContainer.appendChild(chatLink)
+
     console.log('Social tab appended to logoAndHomeContainer');
 
     await updateSocialTabNotification();
@@ -99,45 +109,47 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Handle scrolling to change header background, logo, and link colors
     window.addEventListener('scroll', () => {
-    // Select all the links you want to change the color of
-    const links = document.querySelectorAll('#logoAndHome a, #userSection a, .username');
-    const usernameElement = document.querySelector('.username');
+        // Select all the links you want to change the color of
+        const links = document.querySelectorAll('#logoAndHome a, #userSection a, .username');
+        const usernameElement = document.querySelector('.username');
 
-    if (usernameElement) {
-        usernameElement.style.color = window.scrollY > 50 ? 'white' : '';
-    }
+        if (usernameElement) {
+            usernameElement.style.color = window.scrollY > 50 ? 'white' : '';
+        }
+        if (window.scrollY > 50 && !logoChanged) {
+            header.style.backgroundColor = 'rgba(45, 52, 45, 1)'; // New background with slight transparency
+            searchIcon.classList.add('search-icon-white'); // Add white color class
 
-    if (window.scrollY > 50 && !logoChanged) {
-        header.style.backgroundColor = 'rgba(45, 52, 45, 1)'; // New background with slight transparency
-        searchIcon.classList.add('search-icon-white'); // Add white color class
+            // Fade out the current logo
+            logo.style.opacity = '0';
+            
+            // After the fade-out transition is complete, change the src and fade back in
+            logo.src = '../logonobg.png'; // New logo with correct background color
+            logo.style.opacity = '1'; // Ensure logo is fully visible
+            logoChanged = true; // Mark the logo as changed
+                
+            // Change all link colors to white
+            links.forEach(link => {
+                link.style.color = 'white';
+            });
 
-        // Instantly change the logo without fade-out/fade-in
-        logo.src = '../logonobg.png'; // New logo with correct background color
-        logo.style.opacity = '1'; // Ensure logo is fully visible
-        logoChanged = true; // Mark the logo as changed
+        } else if (window.scrollY <= 50 && logoChanged) {
+            header.style.backgroundColor = 'rgba(233, 220, 175, 1)'; // Initial background color without transparency
+            
+            // Fade out the current logo
+            logo.style.opacity = '0';
+            searchIcon.classList.remove('search-icon-white'); // Remove white color class
 
-        // Change all link colors to white
-        links.forEach(link => {
-            link.style.color = 'white';
-        });
-
-    } else if (window.scrollY <= 50 && logoChanged) {
-        header.style.backgroundColor = 'rgba(233, 220, 175, 1)'; // Initial background color
-
-        searchIcon.classList.remove('search-icon-white'); // Remove white color class
-
-        // Instantly revert the logo without fade-out/fade-in
-        logo.src = '../logonobg.png'; // Original logo
-        logo.style.opacity = '1'; // Ensure logo is fully visible
-        logoChanged = false; // Mark the logo as reverted
-
-        // Change all link colors back to their original color
-        links.forEach(link => {
-            link.style.color = ''; // Remove the inline color style, reverting to original
-        });
-    }
-});
-
+            logo.src = '../logonobg.png'; // Original logo
+            logo.style.opacity = '1'; // Ensure logo is fully visible
+            logoChanged = false; // Mark the logo as reverted
+            
+            // Change all link colors back to their original color
+            links.forEach(link => {
+                link.style.color = ''; // Remove the inline color style, reverting to original
+            });
+        }
+    });
 
     if (currentPath.includes('index.html')) {
         homeLink.classList.add('active-link');
